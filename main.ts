@@ -1,11 +1,11 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { parse } from './parse.js';
 
-const inputPath = join(process.env.MAKEFUN_INPUT_DIR ?? '/input', 'cases.json');
-const outputPath = join(process.env.MAKEFUN_OUTPUT_DIR ?? '/output', 'html.json');
-
-const cases = JSON.parse(readFileSync(inputPath, 'utf8'));
-const html = [];
-for (const item of cases) html.push(parse(item.markdown));
-writeFileSync(outputPath, JSON.stringify(html));
+const inputDir = process.env.MAKEFUN_INPUT_DIR || '/input';
+const outputDir = process.env.MAKEFUN_OUTPUT_DIR || '/output';
+const cases = JSON.parse(await readFile(join(inputDir, 'cases.json'), 'utf8'));
+// Preserve input ordering and keep each rendering independent.
+const html = cases.map((item: { id: string; markdown: string }) => parse(item.markdown));
+await mkdir(outputDir, { recursive: true });
+await writeFile(join(outputDir, 'html.json'), JSON.stringify(html));
