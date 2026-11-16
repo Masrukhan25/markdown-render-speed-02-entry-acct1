@@ -1,1 +1,1 @@
-{"type":"module","name":"markdown-render-speed-02-entry-acct1"}
+{"name":"markdown-render-speed-02-entry-acct1","private":true,"type":"module","scripts":{"start":"node main.ts"}}
